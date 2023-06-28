@@ -5,9 +5,24 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-image: url('static/img/background.jpeg');
+            background-size: cover;
+            background-position: center;
             margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -17,18 +32,6 @@
             color: #333333;
             margin-bottom: 30px;
             text-align: center;
-        }
-
-        .container {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            width: 500px;
-            max-width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         h2 {
@@ -63,6 +66,21 @@
             background-color: #ffc107;
             cursor: not-allowed;
         }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 5px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -71,8 +89,8 @@
 
     <div class="service">
         <h2>Peyk Service</h2>
-        <button class="button" onclick="subscribeCoin()">Subscribe Coin</button>
-        <button class="button" onclick="getPriceHistory()">Get Price History</button>
+        <button class="button" onclick="showSubscriptionForm()">Subscribe Coin</button>
+        <button class="button" onclick="showPriceHistoryForm()">Get Price History</button>
     </div>
 
     <div class="service">
@@ -80,19 +98,120 @@
         <button class="button bepa" onclick="toggleBepaService()">Run Bepa Service</button>
         <button class="button bepa" onclick="stopBepaService()">Stop Bepa Service</button>
     </div>
+
+    <div id="subscriptionForm" style="display: none;">
+        <h2>Subscribe Coin</h2>
+        <form onsubmit="submitSubscription(event)">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="coinName">Coin Name:</label>
+                <input type="text" id="coinName" name="coinName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="differencePercentage">Difference Percentage:</label>
+                <input type="number" id="differencePercentage" name="differencePercentage" step="any" required>
+            </div>
+
+            <div>
+                <button class="button" type="submit">Subscribe</button>
+                <button class="button" type="button" onclick="hideSubscriptionForm()">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="priceHistoryContainer" style="display: none;">
+        <h2>Price History</h2>
+        <div class="form-group">
+            <label for="coinNameHistory">Coin Name:</label>
+            <input type="text" id="coinNameHistory" name="coinNameHistory" required>
+        </div>
+        <button class="button" onclick="fetchPriceHistory()">Get Price History</button>
+        <button class="button" type="button" onclick="hidePriceHistoryForm()">Cancel</button>
+        <ul id="priceHistoryList"></ul>
+    </div>
 </div>
 
 <script>
     let bepaServiceRunning = false;
 
-    function subscribeCoin() {
-        // Redirect to the subscribe endpoint of the Peyk service
-        window.location.href = "/peyk/subscribe";
+    function showSubscriptionForm() {
+        document.getElementById('subscriptionForm').style.display = 'block';
     }
 
+    function hideSubscriptionForm() {
+        document.getElementById('subscriptionForm').style.display = 'none';
+    }
+
+    function submitSubscription(event) {
+        event.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const coinName = document.getElementById('coinName').value;
+        const differencePercentage = parseFloat(document.getElementById('differencePercentage').value);
+
+        const emailRegex = /\S+@\S+\.\S+/;
+        const coinNameRegex = /\S+/;
+
+        if (emailRegex.test(email) && coinNameRegex.test(coinName) && !isNaN(differencePercentage)) {
+            const url = `/subscribe_coin?email=${encodeURIComponent(email)}&coin_name=${encodeURIComponent(coinName)}&difference_percentage=${encodeURIComponent(differencePercentage)}`;
+            fetch(url, {
+                method: 'PUT',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    hideSubscriptionForm();
+                })
+                .catch(error => {
+                    console.log(error);
+                    alert('An error occurred while subscribing to the coin.');
+                });
+        } else {
+            alert('Invalid input. Please try again.');
+        }
+    }
+
+
     function getPriceHistory() {
-        // Redirect to the getPriceHistory endpoint of the Peyk service
-        window.location.href = "/peyk/getPriceHistory";
+        const coinName = document.getElementById('coinName').value;
+
+        if (coinName.trim() === '') {
+            alert('Please enter a valid coin name.');
+            return;
+        }
+
+        const url = `/get_price_history?coin_name=${encodeURIComponent(coinName)}`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const priceHistoryList = document.getElementById('priceHistoryList');
+                priceHistoryList.innerHTML = '';
+
+                if (data.length === 0) {
+                    const listItem = document.createElement('li');
+                    listItem.innerText = 'No price history found.';
+                    priceHistoryList.appendChild(listItem);
+                } else {
+                    data.forEach(price => {
+                        const listItem = document.createElement('li');
+                        const value = price.value.toFixed(2);
+                        const date = new Date(price.date).toLocaleString();
+                        listItem.innerText = `Value: ${value}, Date: ${date}`;
+                        priceHistoryList.appendChild(listItem);
+                    });
+                }
+
+                document.getElementById('priceHistoryContainer').style.display = 'block';
+            })
+            .catch(error => {
+                console.log(error);
+                alert('An error occurred while fetching price history.');
+            });
     }
 
     function toggleBepaService() {
@@ -112,7 +231,7 @@
         button.disabled = true;
         bepaServiceRunning = true;
         // cal the /run_bepa_service endpoint with GET method
-        fetch('/run_bepa_service')
+        fetch('/run_bepa_service', {method: 'POST'})
             .then(response => response.json())
             .then(data => console.log(data))
             .catch(error => console.log(error));
@@ -126,10 +245,55 @@
         button.disabled = false;
         bepaServiceRunning = false;
         // cal the /stop_bepa_service endpoint
-        fetch('/stop_bepa_service')
+        fetch('/stop_bepa_service', {method: 'POST'})
             .then(response => response.json())
             .then(data => console.log(data))
             .catch(error => console.log(error));
+    }
+
+    function showPriceHistoryForm() {
+        document.getElementById('priceHistoryContainer').style.display = 'block';
+    }
+
+    function hidePriceHistoryForm() {
+        document.getElementById('priceHistoryContainer').style.display = 'none';
+    }
+
+    function fetchPriceHistory() {
+        const coinName = document.getElementById('coinNameHistory').value;
+
+        if (coinName.trim() === '') {
+            alert('Please enter a valid coin name.');
+            return;
+        }
+
+        const url = `/get_price_history?coin_name=${encodeURIComponent(coinName)}`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const priceHistoryList = document.getElementById('priceHistoryList');
+                priceHistoryList.innerHTML = '';
+
+                if (data.length === 0) {
+                    const listItem = document.createElement('li');
+                    listItem.innerText = 'No price history found.';
+                    priceHistoryList.appendChild(listItem);
+                } else {
+                    data.forEach(price => {
+                        const listItem = document.createElement('li');
+                        const value = price.value.toFixed(2);
+                        const date = new Date(price.date).toLocaleString();
+                        listItem.innerText = `Value: ${value}, Date: ${date}`;
+                        priceHistoryList.appendChild(listItem);
+                    });
+                }
+
+                document.getElementById('priceHistoryContainer').style.display = 'block';
+            })
+            .catch(error => {
+                console.log(error);
+                alert('An error occurred while fetching price history.');
+            });
     }
 </script>
 </body>
