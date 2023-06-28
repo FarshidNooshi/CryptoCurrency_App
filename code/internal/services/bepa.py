@@ -90,7 +90,7 @@ async def calculate_percentage_change(coin_name):
 
 
 def send_email(recipient, subject, message):
-    url = f"https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages"
+    url = f"{MAILGUN_DOMAIN}/messages"
     auth = ("api", MAILGUN_API_KEY)
     data = {
         "from": MAILGUN_SENDER,
