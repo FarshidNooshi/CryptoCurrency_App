@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CryptoCurrency App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #333333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            color: #ffffff;
+            background-color: #007bff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+            width: 200px;
+            max-width: 100%;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Welcome to CryptoCurrency App</h1>
+
+    <div class="service">
+        <h2>Peyk Service</h2>
+        <button class="button" onclick="subscribeCoin()">Subscribe Coin</button>
+        <button class="button" onclick="getPriceHistory()">Get Price History</button>
+    </div>
+
+    <div class="service">
+        <h2>Bepa Service</h2>
+        <button class="button" onclick="runBepaService()">Run Bepa Service</button>
+    </div>
+</div>
+
+<script>
+    function subscribeCoin() {
+        // Redirect to the subscribe endpoint of the Peyk service
+        window.location.href = "/peyk/subscribe";
+    }
+
+    function getPriceHistory() {
+        // Redirect to the getPriceHistory endpoint of the Peyk service
+        window.location.href = "/peyk/getPriceHistory";
+    }
+
+    function runBepaService() {
+        // Redirect to the run_bepa_service endpoint of the Bepa service
+        window.location.href = "/run_bepa_service";
+    }
+</script>
+</body>
+</html>
