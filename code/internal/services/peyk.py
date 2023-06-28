@@ -1,25 +1,32 @@
-from fastapi import FastAPI, HTTPException, APIRouter
+import sqlalchemy as sa
+from fastapi import HTTPException, APIRouter
 
 from code.internal.DB.database import get_db
-from code.internal.model.models import Price
+from code.internal.model.models import Price, AlertSubscription
 
 app = APIRouter()
 
 
-# app must be of type response class
+@app.put('/subscribe_coin')
+async def subscribe_coin(email: str, coin_name: str, difference_percentage: float):
+    async with get_db() as db:
+        db_subscription = AlertSubscription(email=email, coin_name=coin_name,
+                                            difference_percentage=difference_percentage)
+        db.add(db_subscription)
+        await db.commit()
 
-@app.get('/subscribe_coin')
-def subscribe_coin(email: str, coin_name: str, difference_percentage: int):
-    pass
+    return {'message': 'Subscription added successfully.'}
 
-
-# Implement your logic to save the subscription details to the database
-# You can use the AlertSubscription model to create a new record
 
 @app.get('/get_price_history')
-def get_price_history(coin_name: str):
-    with get_db() as db:
-        prices = db.query(Price).filter(Price.coin_name == coin_name).all()
+async def get_price_history(coin_name: str):
+    async with get_db() as db:
+        prices = await db.execute(
+            sa.select(Price).filter(Price.coin_name == coin_name).order_by(Price.timestamp)
+        )
+        prices = prices.scalars().all()
+
         if not prices:
             raise HTTPException(status_code=404, detail='Price history not found.')
+
         return [{'value': price.price, 'date': price.timestamp} for price in prices]
