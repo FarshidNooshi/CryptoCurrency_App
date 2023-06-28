@@ -106,6 +106,7 @@ def send_email(recipient, subject, message):
     if response.status_code == 200:
         print(f"Email sent to {recipient}")
     else:
+        print(response.json())
         print(f"Failed to send email to {recipient}")
 
 
