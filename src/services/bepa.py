@@ -4,9 +4,8 @@ from datetime import datetime
 import requests
 import sqlalchemy as sa
 
-from src.internal.DB.database import get_db
-
-from src.internal.model.models import Price
+from .DB.database import get_db
+from .model.models import Price, AlertSubscription
 
 # TIME INTERVALS IN SECONDS
 TIME_INTERVAL_TO_CHECK_FOR_PRICE = 10

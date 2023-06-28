@@ -6,14 +6,14 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.staticfiles import StaticFiles
 
-from internal.DB.database import connect_to_database, close_database_connection, engine
-from internal.model.models import Base
-from internal.services.bepa import bepa_service, stop_bepa_service
-from internal.services.peyk import app as peyk_app
+from services.DB.database import connect_to_database, close_database_connection, engine
+from services.model.models import Base
+from services.bepa import bepa_service, stop_bepa_service
+from services.peyk import app as peyk_app
 
 app = FastAPI()
-templates = Jinja2Templates(directory="src/templates")
-app.mount("/static", StaticFiles(directory="src/templates/static"), name="static")
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="templates/static"), name="static")
 
 
 async def create_tables():
