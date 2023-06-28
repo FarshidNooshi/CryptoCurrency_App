@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CryptoCurrency App</title>
+    <title>CryptoCurrency App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -72,7 +72,12 @@
 
     <div class="service">
         <h2>Bepa Service</h2>
-        <button class="button" onclick="runBepaService()">Run Bepa Service</button>
+        <button class="button bepa" onclick="runBepaService()" target="_blank">Run Bepa Service</button>
+    </div>
+
+    <div class="coins">
+        <h2>Available Coins</h2>
+        <ul id="coinList"></ul>
     </div>
 </div>
 
@@ -88,9 +93,27 @@
     }
 
     function runBepaService() {
-        // Redirect to the run_bepa_service endpoint of the Bepa service
-        window.location.href = "/run_bepa_service";
+        // change the windows status with a cool ui/ux trick to show the user that the service is running
+        const button = document.querySelector('.bepa');
+        button.innerText = 'Running...';
+        button.style.backgroundColor = '#ffc107';
+        button.style.cursor = 'not-allowed';
+        button.disabled = true;
+
     }
+
+    // Fetch the list of coins from the /run_bepa_service endpoint
+    fetch('/run_bepa_service')
+        .then(response => response.json())
+        .then(data => {
+            const coinList = document.getElementById('coinList');
+            data.result.forEach(coin => {
+                const li = document.createElement('li');
+                li.innerText = coin;
+                coinList.appendChild(li);
+            });
+        })
+        .catch(error => console.log(error));
 </script>
 </body>
 </html>

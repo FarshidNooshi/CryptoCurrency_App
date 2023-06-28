@@ -19,7 +19,5 @@ async def close_database_connection():
     await database.disconnect()
 
 
-async def get_db():
-    async with async_session() as session:
-        yield session
-
+def get_db():
+    return async_session()
