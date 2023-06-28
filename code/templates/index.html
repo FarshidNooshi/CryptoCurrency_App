@@ -81,6 +81,29 @@
             padding: 5px;
             font-size: 14px;
         }
+
+        #priceHistoryList {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #priceHistoryList li {
+            margin-bottom: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            color: #333333;
+        }
+
+        #priceHistoryList li .value {
+            font-weight: bold;
+        }
+
+        #priceHistoryList li .date {
+            font-size: 12px;
+            color: #888888;
+        }
     </style>
 </head>
 <body>
@@ -281,9 +304,10 @@
                 } else {
                     data.forEach(price => {
                         const listItem = document.createElement('li');
-                        const value = price.value.toFixed(2);
-                        const date = new Date(price.date).toLocaleString();
-                        listItem.innerText = `Value: ${value}, Date: ${date}`;
+                        listItem.innerHTML = `
+                            <span class="value">Value: ${price.value.toFixed(2)}</span><br>
+                            <span class="date">Date: ${new Date(price.date).toLocaleString()}</span>
+                        `;
                         priceHistoryList.appendChild(listItem);
                     });
                 }
