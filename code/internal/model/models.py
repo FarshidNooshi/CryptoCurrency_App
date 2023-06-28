@@ -19,4 +19,4 @@ class AlertSubscription(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String)
     coin_name = Column(String)
-    difference_percentage = Column(Integer)
+    difference_percentage = Column(Float)

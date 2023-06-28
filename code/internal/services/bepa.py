@@ -7,6 +7,9 @@ import sqlalchemy as sa
 from code.internal.DB.database import get_db
 from code.internal.model.models import Price, AlertSubscription
 
+# TIME INTERVALS IN SECONDS
+TIME_INTERVAL_TO_CHECK_FOR_PRICE = 10
+
 # Mailgun configuration
 MAILGUN_API_KEY = 'e88254122f9aadcfd8b789490578edaf-e5475b88-057fdc51'
 MAILGUN_DOMAIN = 'https://api.mailgun.net/v3/sandboxd810fa8fbc0944a39c6fb2760433b07d.mailgun.org'
@@ -37,17 +40,18 @@ async def bepa_service():
 
     while is_bepa_service_running:
         active_currencies = requests.get('http://localhost:8000/api/data').json()
-        list_of_coins = []
+        coins = {}
         for coin_name in active_currencies:
             price = fetch_latest_price(coin_name)
             if price is not None:
-                await write_price_to_database(coin_name, price)
-                list_of_coins.append(coin_name)
+                coins[coin_name] = price
 
         # Send email notifications to users based on alarm subscriptions
-        await send_email_notifications(list_of_coins)
+        await send_email_notifications(coins.keys())
+        for coin_name, price in coins.items():
+            await write_price_to_database(coin_name, price)
 
-        await asyncio.sleep(20)  # Run the service every 60 seconds
+        await asyncio.sleep(TIME_INTERVAL_TO_CHECK_FOR_PRICE)  # Run the service every TIME_INTERVAL_TO_CHECK_FOR_PRICE seconds
 
 
 async def send_email_notifications(coins):
@@ -56,7 +60,6 @@ async def send_email_notifications(coins):
         subscriptions = await db.execute(
             sa.select(AlertSubscription).where(AlertSubscription.coin_name.in_(coins))
         )
-
         for subscription in subscriptions.scalars():
             # Calculate the percentage change of the subscribed coin
             percentage_change = await calculate_percentage_change(subscription.coin_name)
