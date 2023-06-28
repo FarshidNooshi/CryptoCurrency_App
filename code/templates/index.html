@@ -80,11 +80,6 @@
         <button class="button bepa" onclick="toggleBepaService()">Run Bepa Service</button>
         <button class="button bepa" onclick="stopBepaService()">Stop Bepa Service</button>
     </div>
-
-    <div class="coins">
-        <h2>Available Coins</h2>
-        <ul id="coinList"></ul>
-    </div>
 </div>
 
 <script>
@@ -116,6 +111,11 @@
         button.style.cursor = 'not-allowed';
         button.disabled = true;
         bepaServiceRunning = true;
+        // cal the /run_bepa_service endpoint with GET method
+        fetch('/run_bepa_service')
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.log(error));
     }
 
     function stopBepaService() {
@@ -125,20 +125,12 @@
         button.style.cursor = 'pointer';
         button.disabled = false;
         bepaServiceRunning = false;
+        // cal the /stop_bepa_service endpoint
+        fetch('/stop_bepa_service')
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.log(error));
     }
-
-    // Fetch the list of coins from the /run_bepa_service endpoint
-    fetch('/run_bepa_service')
-        .then(response => response.json())
-        .then(data => {
-            const coinList = document.getElementById('coinList');
-            data.result.forEach(coin => {
-                const li = document.createElement('li');
-                li.innerText = coin;
-                coinList.appendChild(li);
-            });
-        })
-        .catch(error => console.log(error));
 </script>
 </body>
 </html>

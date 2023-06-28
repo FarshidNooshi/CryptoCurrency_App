@@ -47,7 +47,7 @@ async def bepa_service():
         # Send email notifications to users based on alarm subscriptions
         await send_email_notifications(list_of_coins)
 
-        await asyncio.sleep(2)  # Run the service every 60 seconds
+        await asyncio.sleep(20)  # Run the service every 60 seconds
 
 
 async def send_email_notifications(coins):
