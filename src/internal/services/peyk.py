@@ -1,8 +1,8 @@
 import sqlalchemy as sa
 from fastapi import HTTPException, APIRouter
 
-from code.internal.DB.database import get_db
-from code.internal.model.models import Price, AlertSubscription
+from src.internal.DB.database import get_db
+from src.internal.model.models import Price, AlertSubscription
 
 app = APIRouter()
 

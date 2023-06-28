@@ -1,0 +1,5 @@
+uvicorn
+fastapi
+databases
+sqlalchemy
+httpx

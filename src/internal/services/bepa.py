@@ -4,8 +4,9 @@ from datetime import datetime
 import requests
 import sqlalchemy as sa
 
-from code.internal.DB.database import get_db
-from code.internal.model.models import Price, AlertSubscription
+from src.internal.DB.database import get_db
+
+from src.internal.model.models import Price
 
 # TIME INTERVALS IN SECONDS
 TIME_INTERVAL_TO_CHECK_FOR_PRICE = 10
@@ -51,7 +52,8 @@ async def bepa_service():
         for coin_name, price in coins.items():
             await write_price_to_database(coin_name, price)
 
-        await asyncio.sleep(TIME_INTERVAL_TO_CHECK_FOR_PRICE)  # Run the service every TIME_INTERVAL_TO_CHECK_FOR_PRICE seconds
+        await asyncio.sleep(
+            TIME_INTERVAL_TO_CHECK_FOR_PRICE)  # Run the service every TIME_INTERVAL_TO_CHECK_FOR_PRICE seconds
 
 
 async def send_email_notifications(coins):

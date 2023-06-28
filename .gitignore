@@ -81,7 +81,7 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 ### Intellij+all Patch ###
-# Ignore everything but code style settings and run configurations
+# Ignore everything but src style settings and run configurations
 # that are supposed to be shared within teams.
 
 .idea/*
@@ -223,7 +223,7 @@ profile_default/
 ipython_config.py
 
 # pyenv
-#   For a library or package, you might want to ignore these files since the code is
+#   For a library or package, you might want to ignore these files since the src is
 #   intended to run in multiple environments; otherwise, check them in:
 # .python-version
 
