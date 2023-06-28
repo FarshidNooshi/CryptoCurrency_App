@@ -4,6 +4,7 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from starlette.staticfiles import StaticFiles
 
 from code.internal.DB.database import connect_to_database, close_database_connection, engine
 from code.internal.model.models import Base
@@ -12,6 +13,7 @@ from code.internal.services.peyk import app as peyk_app
 
 app = FastAPI()
 templates = Jinja2Templates(directory="code/templates")
+app.mount("/static", StaticFiles(directory="code/templates/static"), name="static")
 
 
 async def create_tables():
@@ -38,13 +40,13 @@ async def home(request: Request):
 
 
 # Include the Bepa and peyk services
-@app.get('/run_bepa_service')
+@app.post('/run_bepa_service')
 async def run_bepa_service():
     asyncio.create_task(bepa_service(), name='bepa_service')
     return {'message': 'Bepa service started.'}
 
 
-@app.get('/stop_bepa_service')
+@app.post('/stop_bepa_service')
 async def stop_bepa_service_endpoint():
     stop_bepa_service()
     return {'message': 'Bepa service stopped.'}
