@@ -58,6 +58,11 @@
         .button:hover {
             background-color: #0056b3;
         }
+
+        .bepa-running {
+            background-color: #ffc107;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -72,7 +77,8 @@
 
     <div class="service">
         <h2>Bepa Service</h2>
-        <button class="button bepa" onclick="runBepaService()" target="_blank">Run Bepa Service</button>
+        <button class="button bepa" onclick="toggleBepaService()">Run Bepa Service</button>
+        <button class="button bepa" onclick="stopBepaService()">Stop Bepa Service</button>
     </div>
 
     <div class="coins">
@@ -82,6 +88,8 @@
 </div>
 
 <script>
+    let bepaServiceRunning = false;
+
     function subscribeCoin() {
         // Redirect to the subscribe endpoint of the Peyk service
         window.location.href = "/peyk/subscribe";
@@ -92,14 +100,31 @@
         window.location.href = "/peyk/getPriceHistory";
     }
 
+    function toggleBepaService() {
+        const button = document.querySelector('.bepa');
+        if (bepaServiceRunning) {
+            stopBepaService();
+        } else {
+            runBepaService();
+        }
+    }
+
     function runBepaService() {
-        // change the windows status with a cool ui/ux trick to show the user that the service is running
         const button = document.querySelector('.bepa');
         button.innerText = 'Running...';
-        button.style.backgroundColor = '#ffc107';
+        button.classList.add('bepa-running');
         button.style.cursor = 'not-allowed';
         button.disabled = true;
+        bepaServiceRunning = true;
+    }
 
+    function stopBepaService() {
+        const button = document.querySelector('.bepa');
+        button.innerText = 'Run Bepa Service';
+        button.classList.remove('bepa-running');
+        button.style.cursor = 'pointer';
+        button.disabled = false;
+        bepaServiceRunning = false;
     }
 
     // Fetch the list of coins from the /run_bepa_service endpoint
