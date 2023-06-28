@@ -23,8 +23,6 @@ async def write_price_to_database(coin_name, price):
 
 
 async def bepa_service():
-    print('Running BEPA service')
-    print('&' * 100)
     active_currencies = requests.get('http://localhost:8000/api/data').json()
     list_of_coints = []
     for coin_name in active_currencies:
