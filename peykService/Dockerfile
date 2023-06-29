@@ -6,8 +6,6 @@ WORKDIR /app
 
 # Copy the source code and necessary files to the container
 COPY src/ .
-#COPY src/requirements.txt .
-#COPY src/setup.py .
 
 # Install dependencies
 RUN apt-get update && apt-get install -y build-essential
@@ -31,7 +29,7 @@ COPY --from=builder /app .
 RUN apt-get update && apt-get install -y libgcc1
 
 # Expose the port on which your FastAPI application runs
-EXPOSE 8000
+EXPOSE 8080
 
 # Start the FastAPI application
-CMD ["python", "peyk.py"]
+CMD ["python", "-m", "uvicorn", "peyk:app", "--host", "0.0.0.0", "--port", "8080"]
