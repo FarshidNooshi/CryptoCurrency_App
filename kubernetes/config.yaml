@@ -1,0 +1,23 @@
+# config.yaml
+
+# Server configuration
+server:
+  port: 8080
+
+# Database configuration
+database:
+  host: db
+  port: 3306
+  user: root
+  password: password
+  name: mydb
+
+# Coin News API configuration
+coinNewsApi:
+  url: http://coinnews-container:8000
+
+# Mailgun configuration
+mailgun:
+  apiKey: e88254122f9aadcfd8b789490578edaf-e5475b88-057fdc51
+  domain: https://api.mailgun.net/v3/sandboxd810fa8fbc0944a39c6fb2760433b07d.mailgun.org
+  sender: mailgun@sandboxd810fa8fbc0944a39c6fb2760433b07d.mailgun.org
