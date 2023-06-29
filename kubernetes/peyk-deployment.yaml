@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: peyk-deployment
+spec:
+  replicas: 2  # Adjust the number of replicas as per your requirements
+  selector:
+    matchLabels:
+      app: peyk
+  template:
+    metadata:
+      labels:
+        app: peyk
+    spec:
+      containers:
+        - name: peyk
+          image: farshidnooshi/peyk_service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MYSQL_HOST
+              value: db
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASSWORD
+              value: password
+            - name: MYSQL_DB
+              value: mydb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: peyk-service
+spec:
+  selector:
+    app: peyk
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
