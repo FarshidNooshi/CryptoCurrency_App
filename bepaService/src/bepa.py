@@ -11,7 +11,7 @@ MYSQL_HOST = os.environ.get('MYSQL_HOST', 'db')
 MYSQL_PORT = os.environ.get('MYSQL_PORT', 3306)
 MYSQL_USER = os.environ.get('MYSQL_USER', 'root')
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', 'password')
-MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE', 'mydb')
+MYSQL_DB = os.environ.get('MYSQL_DATABASE', 'mydb')
 
 # Mailgun configuration
 MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY", 'e88254122f9aadcfd8b789490578edaf-e5475b88-057fdc51')
