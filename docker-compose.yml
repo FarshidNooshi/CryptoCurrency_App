@@ -35,8 +35,6 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: 'mydb'
-      MYSQL_USER: 'root'
-      MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
     ports:
       - '3306:3306'
