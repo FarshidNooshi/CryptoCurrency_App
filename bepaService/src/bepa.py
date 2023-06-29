@@ -143,4 +143,4 @@ def stop_bepa_service():
 
 
 if __name__ == '__main__':
-    pass  # Add your code here if needed
+    bepa_service()
