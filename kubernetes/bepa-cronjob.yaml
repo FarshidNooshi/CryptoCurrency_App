@@ -1,0 +1,31 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: bepa-cronjob
+spec:
+  schedule: "*/3 * * * *"  # Adjust the schedule as per your requirements
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: bepa
+              image: farshidnooshi/bepa_service:latest
+              env:
+                - name: MYSQL_HOST
+                  value: db
+                - name: MYSQL_PORT
+                  value: "3306"
+                - name: MYSQL_USER
+                  value: root
+                - name: MYSQL_PASSWORD
+                  value: password
+                - name: MYSQL_DB
+                  value: mydb
+                - name: MAILGUN_API_KEY
+                  value: e88254122f9aadcfd8b789490578edaf-e5475b88-057fdc51
+                - name: MAILGUN_DOMAIN
+                  value: https://api.mailgun.net/v3/sandboxd810fa8fbc0944a39c6fb2760433b07d.mailgun.org
+                - name: MAILGUN_SENDER
+                  value: mailgun@sandboxd810fa8fbc0944a39c6fb2760433b07d.mailgun.org
+          restartPolicy: OnFailure
