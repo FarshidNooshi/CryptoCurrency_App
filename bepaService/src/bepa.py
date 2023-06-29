@@ -1,3 +1,4 @@
+import asyncio
 import os
 from datetime import datetime
 
@@ -143,4 +144,8 @@ def stop_bepa_service():
 
 
 if __name__ == '__main__':
-    bepa_service()
+    loop = asyncio.get_event_loop()
+
+    loop.run_until_complete(bepa_service())
+
+    loop.close()
