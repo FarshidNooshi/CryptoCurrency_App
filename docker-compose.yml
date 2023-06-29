@@ -12,6 +12,7 @@ services:
       - "8080:8080"
     depends_on:
       - db
+      - coinnews-container
 
   bepa:
     image: farshidnooshi/bepa_service:latest
@@ -26,16 +27,31 @@ services:
       - MAILGUN_SENDER=mailgun@sandboxd810fa8fbc0944a39c6fb2760433b07d.mailgun.org
     depends_on:
       - db
+      - coinnews-container
 
   db:
     image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=mydb
+      MYSQL_DATABASE: 'mydb'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
     ports:
-      - "3306:3306"
+      - '3306:3306'
+    expose:
+      - '3306'
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  coinnews-container:
+    image: amirhossein21/coinnews.macos:v0.2
+    volumes:
+      - ./App/config.yml:/go/src/app/config.yml
+    ports:
+      - "8000:8000"
 
 volumes:
   mysql-data:

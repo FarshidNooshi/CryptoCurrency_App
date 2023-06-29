@@ -11,7 +11,7 @@ MYSQL_HOST = os.environ.get('MYSQL_HOST', 'db')
 MYSQL_PORT = os.environ.get('MYSQL_PORT', '3306')
 MYSQL_USER = os.environ.get('MYSQL_USER', 'root')
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', 'password')
-MYSQL_DB = os.environ.get('MYSQL_DATABASE', 'mydb')
+MYSQL_DB = os.environ.get('MYSQL_DB', 'db')
 
 # Mailgun configuration
 MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY", 'e88254122f9aadcfd8b789490578edaf-e5475b88-057fdc51')
@@ -52,7 +52,7 @@ def get_db():
 
 def fetch_latest_price(coin_name):
     print("fetching the latest prices")
-    response = requests.get(f'http://localhost:8000/api/data/{coin_name}')
+    response = requests.get(f'http://coinnews-container:8000/api/data/{coin_name}')
     if response.status_code == 200:
         data = response.json()
         return data['value']
@@ -67,8 +67,8 @@ async def write_price_to_database(coin_name, price):
     session.commit()
 
 
-def bepa_service():
-    active_currencies = requests.get('http://localhost:8000/api/data').json()
+async def bepa_service():
+    active_currencies = requests.get('http://coinnews-container:8000/api/data').json()
     coins = {}
     for coin_name in active_currencies:
         price = fetch_latest_price(coin_name)
@@ -76,12 +76,12 @@ def bepa_service():
             coins[coin_name] = price
 
     # Send email notifications to users based on alarm subscriptions
-    send_email_notifications(list(coins.keys()))
+    await send_email_notifications(list(coins.keys()))
     for coin_name, price in coins.items():
-        write_price_to_database(coin_name, price)
+        await write_price_to_database(coin_name, price)
 
 
-def send_email_notifications(coins):
+async def send_email_notifications(coins):
     session = get_db()
     # Fetch users subscribed to the price changes of the given coins
     subscriptions = session.execute(
@@ -89,7 +89,7 @@ def send_email_notifications(coins):
     )
     for subscription in subscriptions.scalars():
         # Calculate the percentage change of the subscribed coin
-        percentage_change = calculate_percentage_change(subscription.coin_name)
+        percentage_change = await calculate_percentage_change(subscription.coin_name)
 
         # Check if the current price change exceeds the subscribed difference percentage
         if abs(percentage_change) >= subscription.difference_percentage:

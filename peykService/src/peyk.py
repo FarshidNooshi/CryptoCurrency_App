@@ -10,7 +10,7 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 # Read MySQL configuration from environment variables
-MYSQL_HOST = os.environ.get('MYSQL_HOST', 'db')
+MYSQL_HOST = os.environ.get('MYSQL_HOST', '0.0.0.0')
 MYSQL_PORT = os.environ.get('MYSQL_PORT', '3306')
 MYSQL_USER = os.environ.get('MYSQL_USER', 'root')
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', 'password')
