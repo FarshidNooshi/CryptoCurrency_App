@@ -22,7 +22,7 @@ templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="templates/static"), name="static")
 
 # Create the MySQL engine and session
-db_url = f"mysql+asyncmysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+db_url = f"mysql+aiomysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
 engine = create_async_engine(db_url, echo=True)
 async_session = sessionmaker(engine, class_=AsyncSession)
 

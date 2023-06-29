@@ -2,7 +2,7 @@ version: "3.8"
 services:
   peyk:
     build:
-      context: .
+      context: ./peykService
       dockerfile: Dockerfile
       target: builder
     environment:
@@ -12,12 +12,12 @@ services:
       - MYSQL_PASSWORD=password
       - MYSQL_DB=crypto_app_db
     ports:
-      - "8000:8000"
+      - "8080:8000"
     depends_on:
       - db
   bepa:
     build:
-      context: .
+      context: ./bepaService
       dockerfile: Dockerfile
       target: builder
     environment:
@@ -32,7 +32,7 @@ services:
     depends_on:
       - db
   db:
-    image: mysql:5.7
+    image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=mydb
