@@ -12,17 +12,6 @@ spec:
       labels:
         app: db
     spec:
-      initContainers:
-        - name: init-script
-          image: mysql:latest
-          command:
-            - "bash"
-            - "-c"
-            - >
-              echo "Creating database and user..." &&
-              mysql -h localhost -u root -ppassword -e "CREATE DATABASE IF NOT EXISTS mydb;" &&
-              mysql -h localhost -u root -ppassword -e "CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'password';" &&
-              mysql -h localhost -u root -ppassword -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
       containers:
         - name: db-container
           image: mysql:latest
