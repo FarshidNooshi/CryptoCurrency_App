@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: coinnews-ingress
+  labels:
+    app.kubernetes: coinnews
+  annotations:
+    app.ingress.kubernetes.io/rewrite-target: /
+
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: coinnews
+                port:
+                  number: 8000

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: coinnews
+  labels:
+    type: data-source
+    app: coinnews
+    kubernetes.app: data-source
+  annotations:
+    imageregistry: "https://hub.docker.com/"
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coinnews
+  template:
+    metadata:
+      labels:
+        app: coinnews
+    spec:
+      containers:
+        - name: coinnews
+          image: amirhossein21/coinnews.linux:v0.2
+          ports:
+            - containerPort: 8000
+              name: coinnews
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: config
+              mountPath: /go/src/app/config.yml
+              subPath: config.yml
+          livenessProbe:
+            httpGet:
+              port: 8000
+              path: /
+            initialDelaySeconds: 3
+            periodSeconds: 3
+      volumes:
+        - name: config
+          configMap:
+            name: coinnews-configs

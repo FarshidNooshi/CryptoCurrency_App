@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: db-deployment
 spec:
-  replicas: 1  # Adjust the number of replicas as per your requirements
+  replicas: 1
   selector:
     matchLabels:
       app: db
@@ -12,10 +12,25 @@ spec:
       labels:
         app: db
     spec:
-      containers:
-        - name: mysql
+      initContainers:
+        - name: init-script
           image: mysql:latest
-          command: ["--default-authentication-plugin=mysql_native_password"]
+          command:
+            - "mysql"
+            - "-h"
+            - "localhost"
+            - "-u"
+            - "root"
+            - "-ppassword"
+            - "-e"
+            - >
+              CREATE DATABASE mydb; \
+              CREATE USER 'root'@'%' IDENTIFIED BY 'password'; \
+              GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+      containers:
+        - name: db-container
+          image: mysql:latest
+          command: [ "--default-authentication-plugin=mysql_native_password" ]
           env:
             - name: MYSQL_DATABASE
               value: mydb
@@ -26,15 +41,7 @@ spec:
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: db-service
-spec:
-  selector:
-    app: db
-  ports:
-    - protocol: TCP
-      port: 3306
-      targetPort: 3306
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pv
