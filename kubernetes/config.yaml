@@ -21,5 +21,3 @@ mailgun:
   apiKey: e88254122f9aadcfd8b789490578edaf-e5475b88-057fdc51
   domain: https://api.mailgun.net/v3/sandboxd810fa8fbc0944a39c6fb2760433b07d.mailgun.org
   sender: mailgun@sandboxd810fa8fbc0944a39c6fb2760433b07d.mailgun.org
-
-
