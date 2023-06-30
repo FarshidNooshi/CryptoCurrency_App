@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 import requests
-from sqlalchemy import create_engine, select, desc, Column, Integer, Float, DateTime, String
+from sqlalchemy import select, Column, Integer, String, DateTime, Float, desc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -13,6 +13,8 @@ MYSQL_PORT = os.environ.get('MYSQL_PORT', '3306')
 MYSQL_USER = os.environ.get('MYSQL_USER', 'root')
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', 'password')
 MYSQL_DB = os.environ.get('MYSQL_DB', 'db')
+
+COIN_NEWS_API_URL = os.environ.get('COINNEWS_API_URL', 'http://coinnews')
 
 # Mailgun configuration
 MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY", 'e88254122f9aadcfd8b789490578edaf-e5475b88-057fdc51')
@@ -42,18 +44,20 @@ class AlertSubscription(Base):
     email = Column(String(255))
 
 
+from sqlalchemy import create_engine, Column, Integer
+
+# MySQL setup
+Base = declarative_base()
+
 engine = create_engine(f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}')
-Base.metadata.create_all(bind=engine)
 Session = sessionmaker(bind=engine)
 
-
-def get_db():
-    return Session()
+Base.metadata.create_all(bind=engine)
 
 
 def fetch_latest_price(coin_name):
     print("fetching the latest prices")
-    response = requests.get(f'http://coinnews-container:8000/api/data/{coin_name}')
+    response = requests.get(f'{COIN_NEWS_API_URL}:8000/api/data/{coin_name}')
     if response.status_code == 200:
         data = response.json()
         return data['value']
@@ -61,7 +65,7 @@ def fetch_latest_price(coin_name):
 
 
 async def write_price_to_database(coin_name, price):
-    session = get_db()
+    session = Session()
     timestamp = datetime.now()
     db_price = Price(coin_name=coin_name, timestamp=timestamp, price=price)
     session.add(db_price)
@@ -69,7 +73,8 @@ async def write_price_to_database(coin_name, price):
 
 
 async def bepa_service():
-    active_currencies = requests.get('http://coinnews-container:8000/api/data').json()
+    active_currencies = requests.get(f'{COIN_NEWS_API_URL}:8000/api/data').json()
+    # Fetch the latest prices of the active currencies with the curl command
     coins = {}
     for coin_name in active_currencies:
         price = fetch_latest_price(coin_name)
@@ -83,7 +88,7 @@ async def bepa_service():
 
 
 async def send_email_notifications(coins):
-    session = get_db()
+    session = Session()
     # Fetch users subscribed to the price changes of the given coins
     subscriptions = session.execute(
         select(AlertSubscription).where(AlertSubscription.coin_name.in_(coins))
@@ -103,7 +108,7 @@ async def send_email_notifications(coins):
 
 
 async def calculate_percentage_change(coin_name):
-    session = get_db()
+    session = Session()
     # Fetch the last recorded price for the given coin
     last_price = session.execute(
         select(Price).filter(Price.coin_name == coin_name).order_by(desc(Price.timestamp)).limit(1)

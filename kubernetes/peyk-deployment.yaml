@@ -19,7 +19,7 @@ spec:
                       - containerPort: 8080
                   env:
                       - name: MYSQL_HOST
-                        value: db
+                        value: mysql
                       - name: MYSQL_PORT
                         value: "3306"
                       - name: MYSQL_USER

@@ -6,7 +6,7 @@ server:
 
 # Database configuration
 database:
-  host: db
+  host: db-deployment
   port: 3306
   user: root
   password: password

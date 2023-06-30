@@ -2,8 +2,7 @@ import os
 
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import select, Column, Integer, String, DateTime, Float
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import declarative_base
 from starlette.requests import Request
 from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
@@ -22,9 +21,19 @@ templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="templates/static"), name="static")
 
 # Create the MySQL engine and session
-db_url = f"mysql+aiomysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
-engine = create_async_engine(db_url, echo=True)
-async_session = sessionmaker(engine, class_=AsyncSession)
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+# MySQL setup
+Base = declarative_base()
+
+engine = create_engine(f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}')
+Session = sessionmaker(bind=engine)
+
+
+def get_db():
+    return Session()
+
 
 # MySQL setup
 Base = declarative_base()
@@ -46,20 +55,24 @@ class AlertSubscription(Base):
     email = Column(String(255))
 
 
+Base.metadata.create_all(bind=engine)
+
+
 @app.put('/subscribe_coin')
 async def subscribe_coin(email: str, coin_name: str, difference_percentage: float):
-    async with async_session() as session:
-        db_subscription = AlertSubscription(email=email, coin_name=coin_name, difference_percentage=difference_percentage)
+    with get_db() as session:
+        db_subscription = AlertSubscription(email=email, coin_name=coin_name,
+                                            difference_percentage=difference_percentage)
         session.add(db_subscription)
-        await session.commit()
+        session.commit()
 
     return {'message': 'Subscription added successfully.'}
 
 
 @app.get('/get_price_history')
 async def get_price_history(coin_name: str):
-    async with async_session() as session:
-        prices = await session.execute(select(Price).filter(Price.coin_name == coin_name).order_by(Price.timestamp))
+    with get_db() as session:
+        prices = session.execute(select(Price).filter(Price.coin_name == coin_name).order_by(Price.timestamp))
         prices = prices.scalars().all()
 
         if not prices:

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: peyk
+spec:
+  serviceName: peyk
+  replicas: 2
+  selector:
+    matchLabels:
+      app: peyk
+  template:
+    metadata:
+      labels:
+        app: peyk
+    spec:
+      containers:
+        - name: peyk
+          image: farshidnooshi/peyk_service:latest
+          env:
+            - name: MYSQL_HOST
+              value: mysql
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASSWORD
+              value: password
+            - name: MYSQL_DB
+              value: mydb
+          ports:
+            - containerPort: 8080
+  volumeClaimTemplates:
+    - metadata:
+        name: peyk-pvc
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
