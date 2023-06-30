@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   peyk:
-    image: farshidnooshi/peyk_service:latest
+    image: mohammadmahdi255/peyk_service:latest
     environment:
       - MYSQL_HOST=db
       - MYSQL_PORT=3306
@@ -15,7 +15,7 @@ services:
       - coinnews-container
 
   bepa:
-    image: farshidnooshi/bepa_service:latest
+    image: mohammadmahdi255/bepa_service:latest
     environment:
       - MYSQL_HOST=db
       - MYSQL_PORT=3306

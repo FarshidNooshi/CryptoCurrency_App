@@ -2,7 +2,7 @@ import os
 
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import select, Column, Integer, String, DateTime, Float
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import create_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 from starlette.requests import Request
 from starlette.responses import HTMLResponse
@@ -23,7 +23,7 @@ app.mount("/static", StaticFiles(directory="templates/static"), name="static")
 
 # Create the MySQL engine and session
 db_url = f"mysql+aiomysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
-engine = create_async_engine(db_url, echo=True)
+engine = create_engine(db_url)
 async_session = sessionmaker(engine, class_=AsyncSession)
 
 # MySQL setup
@@ -44,7 +44,6 @@ class AlertSubscription(Base):
     coin_name = Column(String(255))
     difference_percentage = Column(Float)
     email = Column(String(255))
-
 
 @app.put('/subscribe_coin')
 async def subscribe_coin(email: str, coin_name: str, difference_percentage: float):
@@ -76,5 +75,5 @@ async def home(request: Request):
 
 if __name__ == '__main__':
     import uvicorn
-
+    
     uvicorn.run(app, host='0.0.0.0', port=8080)

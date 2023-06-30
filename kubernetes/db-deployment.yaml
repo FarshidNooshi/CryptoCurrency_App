@@ -15,8 +15,6 @@ spec:
             containers:
                 - name: db-container
                   image: mysql:latest
-                  command: ["mysqld"]
-                  args: ["--default-authentication-plugin=mysql_native_password"]
                   env:
                       - name: MYSQL_DATABASE
                         value: mydb
@@ -26,12 +24,11 @@ spec:
                       - containerPort: 3306
                   volumeMounts:
                       - name: mysql-data
-                        mountPath: /var/lib/mysql
+                        mountPath: /var/run/mysql
             volumes:
-                - name: mysql-data
+                - name: "mysql-data"
                   persistentVolumeClaim:
-                      claimName: mysql-database-pvc
-
+                      claimName: "mysql-pvc"
 ---
 apiVersion: v1
 kind: Service

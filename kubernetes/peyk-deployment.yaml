@@ -14,12 +14,12 @@ spec:
         spec:
             containers:
                 - name: peyk
-                  image: farshidnooshi/peyk_service:latest
+                  image: mohammadmahdi255/peyk_service:latest
                   ports:
                       - containerPort: 8080
                   env:
                       - name: MYSQL_HOST
-                        value: db
+                        value: db-deployment
                       - name: MYSQL_PORT
                         value: "3306"
                       - name: MYSQL_USER

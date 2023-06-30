@@ -14,6 +14,8 @@ MYSQL_USER = os.environ.get('MYSQL_USER', 'root')
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', 'password')
 MYSQL_DB = os.environ.get('MYSQL_DB', 'db')
 
+COINNEWS_URL = os.environ.get('BASE_URL', 'coinnews')
+
 # Mailgun configuration
 MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY", 'e88254122f9aadcfd8b789490578edaf-e5475b88-057fdc51')
 MAILGUN_DOMAIN = os.environ.get("MAILGUN_DOMAIN",
@@ -53,7 +55,7 @@ def get_db():
 
 def fetch_latest_price(coin_name):
     print("fetching the latest prices")
-    response = requests.get(f'http://coinnews-container:8000/api/data/{coin_name}')
+    response = requests.get(f'http://{COINNEWS_URL}:8000/api/data/{coin_name}')
     if response.status_code == 200:
         data = response.json()
         return data['value']
@@ -69,7 +71,7 @@ async def write_price_to_database(coin_name, price):
 
 
 async def bepa_service():
-    active_currencies = requests.get('http://coinnews-container:8000/api/data').json()
+    active_currencies = requests.get(f'http://{COINNEWS_URL}:8000/api/data').json()
     coins = {}
     for coin_name in active_currencies:
         price = fetch_latest_price(coin_name)
