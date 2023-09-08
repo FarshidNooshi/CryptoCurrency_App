@@ -106,5 +106,5 @@ We have created a Helm chart to simplify the deployment of your application, mak
 We have implemented a Docker Compose configuration for local development, automating the setup of all required resources and dependencies.
 
 # Contributors
-* [Farshid Nooshi](https://ce.aut.ac.ir/~Farshid_Nooshi)
-* [Mehdi Nemati](https://ce.aut.ac.ir/~Farshid_Nooshi)
+* [Farshid Nooshi](https://FarshidNooshi.GitHub.io)
+* [Mehdi Nemati](https://github.com/mohammadmahdi255)
