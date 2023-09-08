@@ -65,7 +65,7 @@ The "Peyk" service provides two endpoints:
 ### Overview
 
 Provide a high-level overview of the system's architecture and how different components interact with each other. You can use diagrams, such as architecture diagrams or flowcharts, to visualize the system's design.
-![System Architecture](/images/system-architecture.png)
+![System Architecture](/images/image.png)
 
 ## Dockerization
 
