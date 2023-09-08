@@ -1,102 +1,72 @@
-# Course Final Project - Cryptocurrency Price Monitoring Application
+# Cryptocurrency Price Monitoring Application
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Project Overview](#project-overview)
-  - [Database](#database)
-  - [Bepa Service](#bepa-service)
-  - [Peyk Service](#peyk-service)
-- [Deployment](#deployment)
-  - [Dockerization](#dockerization)
-  - [Kubernetes Deployment](#kubernetes-deployment)
-- [Additional Steps](#additional-steps)
-- [Scoring](#scoring)
-
----
+This repository contains the source code and documentation for the final project of the Cloud Computing course. The project is an application that monitors cryptocurrency prices, sends alerts to users, and provides historical price data.
 
 ## Introduction
 
-Welcome to the repository for your course's final project. This project aims to apply the concepts you've learned during the course by creating a cryptocurrency price monitoring application. The application consists of various components, including a database, "Bepa" service, and "Peyk" service. Additionally, you will package the application using Docker and deploy it with Kubernetes.
+In this project, we have implemented various cloud computing concepts, including cloud services, containerization with Docker and Kubernetes, and big data processing with Apache Spark and Apache Hadoop. The application is designed to monitor and alert users about cryptocurrency price changes.
 
-## Project Overview
+## Project Components
 
 ### Database
 
-The database for this program contains two tables:
-
-#### Price Table
-
-- **Coin Name (String)**: The name of the cryptocurrency.
-- **Timestamp (Time)**: The timestamp when the price was recorded.
-- **Price (Float)**: The price of the cryptocurrency in dollars.
-
-#### Alert Subscription Table
-
-- **Email (String)**: User's email for notifications.
-- **Coin Name (Foreign Key, String)**: The desired cryptocurrency.
-- **Difference Percentage (Int)**: The percentage change that triggers a notification.
+The database consists of two tables:
+- **Price Table**: Stores the price of specific cryptocurrencies at specific times.
+    - Coin Name (String)
+    - Timestamp (Time)
+    - Price (Float)
+- **Alert Subscription Table**: Allows users to subscribe to price change alerts for specific cryptocurrencies.
+    - Email (String)
+    - Coin Name (Foreign Key, String)
+    - Difference Percentage (Int)
 
 ### Bepa Service
 
-The "Bepa" service performs the following tasks:
-
-- Periodically fetches the latest prices of cryptocurrencies from the coinnews service and stores them in the Price Table.
-- Calculates the percentage change of each cryptocurrency compared to the last recorded price.
-- Sends email alerts to users based on their subscription settings.
+The Bepa service performs the following tasks:
+- Periodically fetches the latest cryptocurrency prices from the coinnews service and stores them in the Price Table.
+- Calculates the percentage change in cryptocurrency prices and sends email alerts to subscribed users.
 
 ### Peyk Service
 
-The "Peyk" service provides users with two endpoints:
+The Peyk service provides two endpoints:
+- **GetPriceHistory**: Allows users to subscribe to price change alerts for specific cryptocurrencies by specifying their email, the desired cryptocurrency, and the percentage of desired changes.
+- **SubscribeCoin**: Retrieves the price history of a specific cryptocurrency.
 
-- **GetPriceHistory**: Allows users to subscribe to changes in a cryptocurrency's price by specifying their email, the desired cryptocurrency, and the desired percentage change.
-- **SubscribeCoin**: Provides the price history of a cryptocurrency based on user requests.
+## Deployment Steps
 
-## Deployment
+### 1. Program Development
 
-### Dockerization
+Develop the database, Bepa, and Peyk services, including the appearance side of the application using your chosen language and framework.
 
-After developing the database and services, package each component as a Docker image using a Dockerfile. Employ the multistage build technique to create the images in two steps:
+### 2. Package the Application using Docker
 
-1. Build the project and create an executable file.
-2. Execute the file within an Alpine container.
+Create Docker images for each component using multi-stage builds:
+- Use a Dockerfile to build each component's image.
+- The first stage should build the project and create an executable file.
+- The second stage should execute the file in an Alpine container.
 
-### Kubernetes Deployment
+### 3. Deploy the Program with Kubernetes
 
-Deploy the application with Kubernetes. Each part of the project requires specific Kubernetes resources:
+Deploy the application components in Kubernetes:
+- Create a ConfigMap containing project configuration information.
+- Create a Secret containing the database credentials.
+- Set up a Persistent Volume and a Persistent Volume Claim for the database.
+- Deploy the database using a Deployment and expose it with a Service.
+- Schedule the Bepa service as a Kubernetes CronJob to run every 3 minutes.
+- Deploy the Peyk service with a Deployment and a corresponding Service.
 
-#### General Items
+### 4. Additional Tasks
 
-- **ConfigMap**: Contains project configuration information, including server port and database address.
-- **Secret**: Contains the database username and password.
+Consider completing the following optional tasks for extra points:
+- Implement Horizontal Pod Autoscaling (HPA) for the Peyk service for automatic scaling of courier service pods.
+- Replace the database Deployment with a StatefulSet and modify your project code accordingly.
+- Implement a Helm chart for easier deployment and management.
+- Create a Docker Compose file to automate resource creation and project building and running.
 
-#### Database
+## Work Report
 
-- **Persistent Volume and Persistent Volume Claim**: Used to maintain database data.
-- **Deployment**: Responsible for preparing and executing the database in pod form. You can choose how to create the database.
-- **Service**: Enables communication with deployment pods. The deployment should use the username and password defined in the secret and the memory space defined in the Persistent Volume Claim.
+In your work report, make sure to include details and documentation for each of the project components and deployment steps. Explain any additional tasks you have completed for bonus points.
 
-#### Bepa Service
+For further assistance or questions, refer to the course materials or contact the instructor.
 
-- **CronJob**: Runs the Bepa service as a Kubernetes cron job. It executes the image created during the Dockerization step every 3 minutes.
-
-#### Peyk Service
-
-- **Deployment**: Runs the Peyk server as two pods. These pods must have access to the ConfigMap and Secret content to access the database.
-- **Service**: Facilitates communication with Peyk service pods.
-
-The Kubernetes resources mentioned here should be created in logical dependency order, meaning you should create resources from right to left and from top to bottom. To create each item, use the `kubectl apply` command.
-
-## Additional Steps
-
-In addition to the core project, there are some additional steps that can earn you extra points:
-
-- **Creation of HPA (Horizontal Pod Autoscaler)**: Implement automatic scaling for Peyk service pods.
-- **Replacing Database Deployment with StatefulSet**: Modify your project code to properly utilize a StatefulSet, which includes master and slave components.
-- **Helm Chart Implementation**: Create a Helm chart for your project to streamline deployment.
-- **Docker Compose**: Implement Docker Compose to automate the creation of project resources and dependencies, build Docker images, and run the application.
-
-## Scoring
-
-In your work report, make sure to address each of the scoring sections mentioned above and provide details on how you implemented them. These additional steps will demonstrate your proficiency in containerization and orchestration technologies, further enhancing your project's quality.
-
-Feel free to consult course materials and documentation as needed during your project development. Good luck with your final project!
+Happy coding!
