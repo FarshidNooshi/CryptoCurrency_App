@@ -20,6 +20,8 @@ This repository contains the source code and configuration files for a cryptocur
     - [Helm Chart](#helm-chart)
     - [Docker Compose](#docker-compose)
 6. [Contributors](#contributors)
+7. [License](#license)
+
 
 
 ---
@@ -108,3 +110,7 @@ We have implemented a Docker Compose configuration for local development, automa
 # Contributors
 * [Farshid Nooshi](https://FarshidNooshi.GitHub.io)
 * [Mehdi Nemati](https://github.com/mohammadmahdi255)
+
+# License
+
+This project is licensed under the MIT License - see the LICENSE.md file for details.
