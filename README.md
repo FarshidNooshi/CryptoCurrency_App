@@ -8,19 +8,21 @@ This repository contains the source code and configuration files for a cryptocur
     - [Database](#database)
     - [Bepa Service](#bepa-service)
     - [Peyk Service](#peyk-service)
-3. [Dockerization](#dockerization)
-4. [Deployment with Kubernetes](#deployment-with-kubernetes)
+3. [System Design](#system-design)
+    - [Overview](#overview)
+4. [Dockerization](#dockerization)
+5. [Deployment with Kubernetes](#deployment-with-kubernetes)
     - [General Items](#general-items)
     - [Database](#database-deployment)
     - [Bepa Service](#bepa-service-deployment)
     - [Peyk Service](#peyk-service-deployment)
-5. [Additional Steps](#additional-steps)
+6. [Additional Steps](#additional-steps)
     - [Horizontal Pod Autoscaling (HPA)](#horizontal-pod-autoscaling)
     - [StatefulSet for Database](#statefulset-for-database)
     - [Helm Chart](#helm-chart)
     - [Docker Compose](#docker-compose)
-6. [Contributors](#contributors)
-7. [License](#license)
+7. [Contributors](#contributors)
+8. [License](#license)
 
 
 
@@ -58,6 +60,12 @@ The "Bepa" service is responsible for two main tasks:
 The "Peyk" service provides two endpoints:
 1. `GetPriceHistory`: Allows users to subscribe to cryptocurrency price change alerts by specifying their email, the cryptocurrency name, and the desired percentage change.
 2. `SubscribeCoin`: Retrieves the price history of a specified cryptocurrency.
+
+## System Design
+### Overview
+
+Provide a high-level overview of the system's architecture and how different components interact with each other. You can use diagrams, such as architecture diagrams or flowcharts, to visualize the system's design.
+![System Architecture](/images/system-architecture.png)
 
 ## Dockerization
 
