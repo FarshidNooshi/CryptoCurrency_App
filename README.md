@@ -1,72 +1,110 @@
 # Cryptocurrency Price Monitoring Application
 
-This repository contains the source code and documentation for the final project of the Cloud Computing course. The project is an application that monitors cryptocurrency prices, sends alerts to users, and provides historical price data.
+This repository contains the source code and configuration files for a cryptocurrency price monitoring application developed as part of the Cloud Computing final course project. The application is designed to monitor and notify users about changes in cryptocurrency prices. It is divided into several components, including a database, the "Bepa" service, and the "Peyk" service, all of which are containerized using Docker and deployed on Kubernetes. Below, we provide an overview of each component and the steps to set up and deploy the application.
+
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Components](#components)
+    - [Database](#database)
+    - [Bepa Service](#bepa-service)
+    - [Peyk Service](#peyk-service)
+3. [Dockerization](#dockerization)
+4. [Deployment with Kubernetes](#deployment-with-kubernetes)
+    - [General Items](#general-items)
+    - [Database](#database-deployment)
+    - [Bepa Service](#bepa-service-deployment)
+    - [Peyk Service](#peyk-service-deployment)
+5. [Additional Steps](#additional-steps)
+    - [Horizontal Pod Autoscaling (HPA)](#horizontal-pod-autoscaling)
+    - [StatefulSet for Database](#statefulset-for-database)
+    - [Helm Chart](#helm-chart)
+    - [Docker Compose](#docker-compose)
+6. [Contributors](#contributors)
+
+
+---
 
 ## Introduction
 
-In this project, we have implemented various cloud computing concepts, including cloud services, containerization with Docker and Kubernetes, and big data processing with Apache Spark and Apache Hadoop. The application is designed to monitor and alert users about cryptocurrency price changes.
+In this project, we have implemented various cloud computing concepts, including cloud services, containerization with Docker and Kubernetes, and big data processing. The application's main objective is to monitor and notify users about cryptocurrency price changes.
 
-## Project Components
+## Components
 
 ### Database
 
 The database consists of two tables:
-- **Price Table**: Stores the price of specific cryptocurrencies at specific times.
-    - Coin Name (String)
-    - Timestamp (Time)
-    - Price (Float)
-- **Alert Subscription Table**: Allows users to subscribe to price change alerts for specific cryptocurrencies.
-    - Email (String)
-    - Coin Name (Foreign Key, String)
-    - Difference Percentage (Int)
+
+1. **Price table**: Stores the price of specific cryptocurrencies in dollars at specific timestamps.
+
+   | Coin Name (String) | Timestamp (Time) | Price (Float) |
+   |--------------------|-------------------|---------------|
+
+2. **Alert subscription table**: Allows users to subscribe to price change alerts for specific cryptocurrencies. Each row contains the user's email, the desired cryptocurrency, and the percentage change trigger.
+
+   | Email (String) | Coin Name (Foreign Key, String) | Difference Percentage (Int) |
+   |-----------------|---------------------------------|-----------------------------|
+
 
 ### Bepa Service
 
-The Bepa service performs the following tasks:
-- Periodically fetches the latest cryptocurrency prices from the coinnews service and stores them in the Price Table.
-- Calculates the percentage change in cryptocurrency prices and sends email alerts to subscribed users.
+The "Bepa" service is responsible for two main tasks:
+1. Fetches the latest cryptocurrency prices from the coinnews service and updates the Price Table in the database.
+2. Sends price change alerts to users by calculating the percentage change of cryptocurrencies and checking for activated alerts in the Alert Subscription Table. Emails are used for user notifications.
 
 ### Peyk Service
 
-The Peyk service provides two endpoints:
-- **GetPriceHistory**: Allows users to subscribe to price change alerts for specific cryptocurrencies by specifying their email, the desired cryptocurrency, and the percentage of desired changes.
-- **SubscribeCoin**: Retrieves the price history of a specific cryptocurrency.
+The "Peyk" service provides two endpoints:
+1. `GetPriceHistory`: Allows users to subscribe to cryptocurrency price change alerts by specifying their email, the cryptocurrency name, and the desired percentage change.
+2. `SubscribeCoin`: Retrieves the price history of a specified cryptocurrency.
 
-## Deployment Steps
+## Dockerization
 
-### 1. Program Development
+To containerize the application components, we use Docker with a multi-stage build technique. Each component is packaged into a Docker image, ensuring efficient deployment across various environments.
 
-Develop the database, Bepa, and Peyk services, including the appearance side of the application using your chosen language and framework.
+## Deployment with Kubernetes
 
-### 2. Package the Application using Docker
+We deploy the application on Kubernetes, utilizing various resources and configurations for each component.
 
-Create Docker images for each component using multi-stage builds:
-- Use a Dockerfile to build each component's image.
-- The first stage should build the project and create an executable file.
-- The second stage should execute the file in an Alpine container.
+### General Items
 
-### 3. Deploy the Program with Kubernetes
+- **ConfigMap**: Contains project configuration information, including server port and database address.
+- **Secret**: Stores the database username and password securely.
 
-Deploy the application components in Kubernetes:
-- Create a ConfigMap containing project configuration information.
-- Create a Secret containing the database credentials.
-- Set up a Persistent Volume and a Persistent Volume Claim for the database.
-- Deploy the database using a Deployment and expose it with a Service.
-- Schedule the Bepa service as a Kubernetes CronJob to run every 3 minutes.
-- Deploy the Peyk service with a Deployment and a corresponding Service.
+### Database Deployment
 
-### 4. Additional Tasks
+- **Persistent Volume (PV) and Persistent Volume Claim (PVC)**: Ensures data persistence for the database.
+- **Deployment**: Manages the database pods and uses the secrets for authentication.
+- **Service**: Enables communication with the database pods.
 
-Consider completing the following optional tasks for extra points:
-- Implement Horizontal Pod Autoscaling (HPA) for the Peyk service for automatic scaling of courier service pods.
-- Replace the database Deployment with a StatefulSet and modify your project code accordingly.
-- Implement a Helm chart for easier deployment and management.
-- Create a Docker Compose file to automate resource creation and project building and running.
+### Bepa Service Deployment
 
-## Work Report
+- **CronJob**: Runs the "Bepa" service image at regular intervals (e.g., every 3 minutes).
 
-In your work report, make sure to include details and documentation for each of the project components and deployment steps. Explain any additional tasks you have completed for bonus points.
+### Peyk Service Deployment
 
-For further assistance or questions, refer to the course materials or contact the instructor.
+- **Deployment**: Manages the "Peyk" service pods and accesses the ConfigMap and Secret for database connectivity.
+- **Service**: Facilitates communication with "Peyk" service pods.
 
-Happy coding!
+## Additional Steps
+
+In addition to the core project requirements, we have considered these optional steps to enhance the application:
+
+### Horizontal Pod Autoscaling (HPA)
+
+We have implemented HPA to automatically scale the "Peyk" service pods based on resource utilization or custom metrics.
+
+### StatefulSet for Database
+
+We have replaced the database Deployment with StatefulSets for managing the database pods, allowing for more advanced database management features.
+
+### Helm Chart
+
+We have created a Helm chart to simplify the deployment of your application, making it easier to manage Kubernetes resources.
+
+### Docker Compose
+
+We have implemented a Docker Compose configuration for local development, automating the setup of all required resources and dependencies.
+
+# Contributors
+* [Farshid Nooshi](https://ce.aut.ac.ir/~Farshid_Nooshi)
+* [Mehdi Nemati](https://ce.aut.ac.ir/~Farshid_Nooshi)
