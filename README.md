@@ -1,4 +1,4 @@
-# Cryptocurrency Price Monitoring Application
+<img width="430" alt="image" src="https://github.com/FarshidNooshi/CryptoCurrency_App/assets/57137801/2cf1662c-2180-43cd-9e5f-e3f68893940d"># Cryptocurrency Price Monitoring Application
 
 This repository contains the source code and configuration files for a cryptocurrency price monitoring application developed as part of the Cloud Computing final course project. The application is designed to monitor and notify users about changes in cryptocurrency prices. It is divided into several components, including a database, the "Bepa" service, and the "Peyk" service, all of which are containerized using Docker and deployed on Kubernetes. Below, we provide an overview of each component and the steps to set up and deploy the application.
 
@@ -66,6 +66,13 @@ The "Peyk" service provides two endpoints:
 
 Provide a high-level overview of the system's architecture and how different components interact with each other. You can use diagrams, such as architecture diagrams or flowcharts, to visualize the system's design.
 ![System Architecture](/images/image.png)
+
+#### User Interface
+
+![Dashboard](/images/front-end.png)
+
+*Description*: Provide a brief description of the user interface and its key features.
+
 
 ## Dockerization
 
