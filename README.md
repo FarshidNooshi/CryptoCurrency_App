@@ -94,6 +94,15 @@ Provide a high-level overview of the system's architecture and how different com
       <img src="/images/email.png" width="400"/>
     </td>
   </tr>
+  <tr>
+    <td>
+      <img src="/images/front-end4.png" width="400"/>
+    </td>
+    <td>
+      <img src="/images/front-end5.png" width="500"/>
+    </td>
+  </tr>
+
 </table>
 
 *Description*: Detailed screenshots for the system and its main features.
