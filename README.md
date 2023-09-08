@@ -17,6 +17,7 @@ This repository contains the source code and configuration files for a cryptocur
     - [Peyk Service](#peyk-service)
 3. [System Design](#system-design)
     - [Overview](#overview)
+    - [User Interface](#user-interface)
 4. [Dockerization](#dockerization)
 5. [Deployment with Kubernetes](#deployment-with-kubernetes)
     - [General Items](#general-items)
@@ -24,7 +25,7 @@ This repository contains the source code and configuration files for a cryptocur
     - [Bepa Service](#bepa-service-deployment)
     - [Peyk Service](#peyk-service-deployment)
 6. [Additional Steps](#additional-steps)
-    - [Horizontal Pod Autoscaling (HPA)](#horizontal-pod-autoscaling)
+    - [Horizontal Pod Autoscaling](#horizontal-pod-autoscaling)
     - [StatefulSet for Database](#statefulset-for-database)
     - [Helm Chart](#helm-chart)
     - [Docker Compose](#docker-compose)
@@ -130,9 +131,9 @@ We deploy the application on Kubernetes, utilizing various resources and configu
 
 In addition to the core project requirements, we have considered these optional steps to enhance the application:
 
-### Horizontal Pod Autoscaling (HPA)
+### Horizontal Pod Autoscaling
 
-We have implemented HPA to automatically scale the "Peyk" service pods based on resource utilization or custom metrics.
+We have implemented Horizontal Pod Autoscaling to automatically scale the "Peyk" service pods based on resource utilization or custom metrics.
 
 ### StatefulSet for Database
 
